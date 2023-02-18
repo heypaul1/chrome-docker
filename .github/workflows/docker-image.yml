@@ -24,5 +24,6 @@ jobs:
 
       - name: Create LocalTunnel
         run: |
-          lt --port 8080 --subdomain my-vnc-container &
+          lt --port 8080 --subdomain chrome.primordials
+          
 

@@ -1,9 +1,7 @@
-name: BChrome VNC Docker container
+name: Chrome VNC Docker container
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -11,11 +9,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      
-      - name: Set up LocalTunnel
-        uses: kherrick/localtunnel-action@v2.2.0
-        with:
-          subdomain: my-vnc-container
 
       - name: Build Docker image
         run: |
@@ -23,17 +16,13 @@ jobs:
 
       - name: Run Docker container
         run: |
-          docker run -d --name vnc-container -p8080:80 chrome-vnc
+          docker run --name vnc-container -p8080:80 -d chrome-vnc
 
-      
+      - name: Install LocalTunnel
+        run: |
+          sudo npm install -g localtunnel
+
       - name: Create LocalTunnel
         run: |
-          lt --port 8080 --subdomain ${{ secrets.LOCALTUNNEL_SUBDOMAIN }} &
-          echo $! > tunnel.pid
-      - name: sleep
-        run: sleep 100000
-          
-          
-          
-    
-          
+          lt --port 8080 --subdomain my-vnc-container &
+
